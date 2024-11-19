@@ -342,6 +342,8 @@ for n_row in sophia_data_ep1.index:
 
 sophia_screentime_ep1.fillna(0, inplace = True)
 
+sophia_screentime_ep1['Seconds'] = sophia_screentime_ep1.index
+
 
 
 #Sophia Lineplot
@@ -567,43 +569,61 @@ test = {}
 
 test_df = pd.DataFrame(columns = [char_pairings])
 
+
+
+    
+    
+# make a new dataframe with zach and sphia agreement data on when characters are on screen 
+#make new dtaaframe empty 
+# if row 1 for rayan and sophia equal 1
+
+
+    
+zach_sophia_ep1 = pd.DataFrame()
+
+
+
+# Add the shared values to a new column in df
+
+ryan_df = pd.DataFrame()
+
 for char in char_list:
-    temp_pairing = zach_screentime_ep1[(zach_screentime_ep1[char] == 1) & (zach_screentime_ep1[char] == 1 )]
-    
-    def chunk_by_successive(lst):
-        """Chunks a list of numbers based on successive sequences."""
-
-        result = []
-        current_chunk = []
-
-        for num in lst:
-            if not current_chunk or num == current_chunk[-1] + 1:
-                current_chunk.append(num)
-            else:
-                result.append(current_chunk)
-                current_chunk = [num]
-
-        if current_chunk:
-            result.append(current_chunk)
-
-        return result
-    
-    temp_output = chunk_by_successive(temp_pairing['Seconds']) 
-    
-    string = [temp_output[0][0],temp_output[0][-1]]
-    test_df[char_pairings] = string
-
-    
-    
-
-    
+    temp_df_zach = zach_screentime_ep1[zach_screentime_ep1[char] == 1 & zach_screentime_ep1['Seconds']]
+    temp_df_sophia = sophia_screentime_ep1[sophia_screentime_ep1[char] == 1 & sophia_screentime_ep1['Seconds']]
+    zach_sophia_ep1 = pd.merge(temp_df_zach, temp_df_sophia, how = 'inner')
     
 
 
+#for char in zach_screentime_ep1[char]:
+    #if value in sophia_screentime_ep1[char].values:  # Compare with all values in df2['ColB']
+     #   print(f"Value {value} is found in both DataFrames.")
+   # else:
+      #  print(f"Value {value} is not found in df2.")
     
+def chunk_by_successive(lst):
+     """Chunks a list of numbers based on successive sequences."""
 
+     result = []
+     current_chunk = []
 
+     for num in lst:
+         if not current_chunk or num == current_chunk[-1] + 1:
+             current_chunk.append(num)
+         else:
+             result.append(current_chunk)
+             current_chunk = [num]
 
+     if current_chunk:
+         result.append(current_chunk)
+
+     return result
+ 
+for char in char_list:
+    temp_pairings = zach_sophia_ep1[(zach_sophia_ep1[char] == 1) & (zach_sophia_ep1[char] == 1 )]
+    temp_output = chunk_by_successive(zach_sophia_ep1['Seconds']) 
+for n in n_row:
+        string = [temp_output[n][0],temp_output[n][-1]]
+        relation_dict[char_pairings] = string
 
 
 
