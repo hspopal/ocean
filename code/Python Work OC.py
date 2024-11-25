@@ -530,25 +530,24 @@ grouped = temp_seth_ryan_z.groupby('Seth').sum()
 #if char in char_list:
     #temp_seth_ryan_z = zach_screentime_ep1[(zach_screentime_ep1['Ryan'] == 1) & (zach_screentime_ep1['Seth'] ==1 )]
     #temp_seth_ryan_list = list(temp_seth_ryan_z)
-    
-    
+
 def chunk_by_successive(lst):
-    """Chunks a list of numbers based on successive sequences."""
+        """Chunks a list of numbers based on successive sequences."""
 
-    result = []
-    current_chunk = []
+        result = []
+        current_chunk = []
 
-    for num in lst:
-        if not current_chunk or num == current_chunk[-1] + 1:
-            current_chunk.append(num)
-        else:
+        for num in lst:
+            if not current_chunk or num == current_chunk[-1] + 1:
+                current_chunk.append(num)
+            else:
+                result.append(current_chunk)
+                current_chunk = [num]
+
+        if current_chunk:
             result.append(current_chunk)
-            current_chunk = [num]
 
-    if current_chunk:
-        result.append(current_chunk)
-
-    return result
+        return result 
 
 numbers = [1, 2, 3, 5, 7, 8, 9, 11]
 seth_ryan = chunk_by_successive(temp_seth_ryan_z['Seconds']) 
@@ -593,6 +592,35 @@ for char in char_list:
     zach_sophia_ep1 = pd.merge(temp_df_zach, temp_df_sophia, how = 'inner')
     
 
+temp_shared_list = []
+
+
+
+for char_a in char_list: 
+    for char_b in char_list:
+        if char_a != char_b:
+            temp_df_zach = zach_screentime_ep1[(zach_screentime_ep1[char_a] == 1) & 
+                                (zach_screentime_ep1[char_b] == 1)]
+            temp_df_sophia = sophia_screentime_ep1[(sophia_screentime_ep1[char_a] == 1) &
+                                                   (sophia_screentime_ep1[char_b] == 1)]
+            temp_zach_list = temp_df_zach['Seconds']
+            temp_list_sophia = temp_df_sophia['Seconds']
+            for x in temp_zach_list:
+                if x in temp_list_sophia:
+                   temp_shared_list.append(x)
+                   chunked_list = chunk_by_successive(temp_shared_list)
+                   for sublist in chunked_list:
+                      chunked_list.append([sublist[0], sublist[-1]])
+                      
+                   
+                    
+
+
+                    
+            
+            
+    
+    
 
 #for char in zach_screentime_ep1[char]:
     #if value in sophia_screentime_ep1[char].values:  # Compare with all values in df2['ColB']
@@ -600,24 +628,6 @@ for char in char_list:
    # else:
       #  print(f"Value {value} is not found in df2.")
     
-def chunk_by_successive(lst):
-     """Chunks a list of numbers based on successive sequences."""
-
-     result = []
-     current_chunk = []
-
-     for num in lst:
-         if not current_chunk or num == current_chunk[-1] + 1:
-             current_chunk.append(num)
-         else:
-             result.append(current_chunk)
-             current_chunk = [num]
-
-     if current_chunk:
-         result.append(current_chunk)
-
-     return result
- 
 for char in char_list:
     temp_pairings = zach_sophia_ep1[(zach_sophia_ep1[char] == 1) & (zach_sophia_ep1[char] == 1 )]
     temp_output = chunk_by_successive(zach_sophia_ep1['Seconds']) 
