@@ -421,20 +421,7 @@ print(output)
 
 print(char_list)
 
-#cohen_interrater_scores_ryan_sophia = pd.DataFrame(columns = char_list)
 
-#cohen_interrater_scores_ryan_sophia['Rater 2'] = char_list
-
-#raters = screentime_sum['Rater'].unique()
-
-
-
-#for n_column in zach_data_screentime:
-    #temp_rater_list_zach = zach_data_screentime[zach_data_screentime.columns == char_list]
-    #temp_rater_list_sophia = sophia_data_screentime[sophia_data_screentime.columns == char_list]
-        
-    #temp_output = cohen_kappa_score(temp_rater_list_zach, temp_rater_list_sophia)
-    #kappa_results.append((n_column, temp_output))
 
 # Convert the results into a DataFrame for comparison
 
@@ -485,12 +472,8 @@ for char in char_list:
 # bargraph add average overall 
 
 
-
-
-
-
-
-
+#First thing I did here was attempt to make a 
+#cohen kappa score for two zach and sophia on ryan. 
 
 from sklearn.metrics import cohen_kappa_score
 ryan_zach = zach_data_screentime['Ryan']
@@ -498,18 +481,23 @@ ryan_sophia = sophia_data_screentime['Ryan']
 
 ryan_zach_sophia_score = cohen_kappa_score(ryan_zach, ryan_sophia)
 
-
+#this gives me the score
 print(ryan_zach_sophia_score)
 
+#this prints the length of each person
 print(len(ryan_zach), len(ryan_sophia))
 
+#this makes a new df I can use
 kappa_results_bar_ep1 = kappa_results_ep1
 
-
+#this is needed to make the df in which I can look at the 
+#cohen kappa scores for each rater and character
 kappa_results_long = kappa_results_ep1.melt(id_vars="Raters", 
                                             var_name="Character", value_name="Kappa Score")
 
-kappa_results_bar = sns.barplot(data = kappa_results_long, x='Character', y='Kappa Score', hue='Raters')
+#this is my barplot of the results
+kappa_results_bar = sns.barplot(data = kappa_results_long, x='Character', 
+                                y='Kappa Score', hue='Raters')
 sns.move_legend(kappa_results_bar, "upper left", bbox_to_anchor=(1, 1))
 
 
@@ -521,16 +509,18 @@ relation_dict['Ryan-Seth'].append("752-926")
 
 
 
-
+#sophia_screentime_ep1 and zach_screentime_ep1 were the 
+#df I used for the relationship dictionary 
 zach_screentime_ep1['Seconds'] = zach_data_screentime.index
 
-temp_seth_ryan_z = zach_screentime_ep1[(zach_screentime_ep1['Ryan'] == 1) & (zach_screentime_ep1['Seth'] == 1 )]
+#this is an example of what I was trying to do that I attempted
+temp_seth_ryan_z = zach_screentime_ep1[(zach_screentime_ep1['Ryan'] == 1)
+                                       & (zach_screentime_ep1['Seth'] == 1 )]
 grouped = temp_seth_ryan_z.groupby('Seth').sum()
 
-#if char in char_list:
-    #temp_seth_ryan_z = zach_screentime_ep1[(zach_screentime_ep1['Ryan'] == 1) & (zach_screentime_ep1['Seth'] ==1 )]
-    #temp_seth_ryan_list = list(temp_seth_ryan_z)
 
+#to chunk my lists by successive, I used this 
+#new definition chunk_by_successiev for my lists
 def chunk_by_successive(lst):
         """Chunks a list of numbers based on successive sequences."""
 
@@ -549,53 +539,45 @@ def chunk_by_successive(lst):
 
         return result 
 
-numbers = [1, 2, 3, 5, 7, 8, 9, 11]
+#example of this
 seth_ryan = chunk_by_successive(temp_seth_ryan_z['Seconds']) 
-    # Output: [[1, 2, 3], [5], [7, 8, 9], [11]]
     
-type(seth_ryan)
-    
-    
+
+
+# Generate all unique combinations of pairs
 import itertools
+char_pairings = list(itertools.combinations(char_list, 2))    
 
 print(char_list)
 
-# Generate all unique combinations of pairs
-char_pairings = list(itertools.combinations(char_list, 2))    
-
-
-test = {}
-
-test_df = pd.DataFrame(columns = [char_pairings])
-
-
 
     
     
-# make a new dataframe with zach and sphia agreement data on when characters are on screen 
-#make new dtaaframe empty 
-# if row 1 for rayan and sophia equal 1
-
-
-    
-zach_sophia_ep1 = pd.DataFrame()
+# make a new list with zach and sphia agreement data on 
+#when characters are on screen (time wise)
+ 
 
 
 
+#first attempt was as a df not a list, was not successful, was not getting successive
 # Add the shared values to a new column in df
 
 ryan_df = pd.DataFrame()
 
 for char in char_list:
-    temp_df_zach = zach_screentime_ep1[zach_screentime_ep1[char] == 1 & zach_screentime_ep1['Seconds']]
-    temp_df_sophia = sophia_screentime_ep1[sophia_screentime_ep1[char] == 1 & sophia_screentime_ep1['Seconds']]
+    temp_df_zach = zach_screentime_ep1[zach_screentime_ep1[char] == 1 
+                                       & zach_screentime_ep1['Seconds']]
+    temp_df_sophia = sophia_screentime_ep1[sophia_screentime_ep1[char] == 1 
+                                           & sophia_screentime_ep1['Seconds']]
     zach_sophia_ep1 = pd.merge(temp_df_zach, temp_df_sophia, how = 'inner')
     
 
+
+#here is the actual successive chunking. Got it to work till the end. 
+#Need to trouble shoot the last 4 lines starting from n=0
+
+
 temp_shared_list = []
-
-
-
 for char_a in char_list: 
     for char_b in char_list:
         if char_a != char_b:
@@ -609,31 +591,16 @@ for char_a in char_list:
                 if x in temp_list_sophia:
                    temp_shared_list.append(x)
                    chunked_list = chunk_by_successive(temp_shared_list)
+                   n=0
                    for sublist in chunked_list:
-                      chunked_list.append([sublist[0], sublist[-1]])
+                       for n in sublist:
+                           chunked_list.append([sublist[n], sublist[-1]])
+                           n= n+1
+            
+                  
                       
                    
-                    
-
-
-                    
-            
-            
-    
-    
-
-#for char in zach_screentime_ep1[char]:
-    #if value in sophia_screentime_ep1[char].values:  # Compare with all values in df2['ColB']
-     #   print(f"Value {value} is found in both DataFrames.")
-   # else:
-      #  print(f"Value {value} is not found in df2.")
-    
-for char in char_list:
-    temp_pairings = zach_sophia_ep1[(zach_sophia_ep1[char] == 1) & (zach_sophia_ep1[char] == 1 )]
-    temp_output = chunk_by_successive(zach_sophia_ep1['Seconds']) 
-for n in n_row:
-        string = [temp_output[n][0],temp_output[n][-1]]
-        relation_dict[char_pairings] = string
+        
 
 
 
