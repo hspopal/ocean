@@ -731,7 +731,7 @@ for char_a in char_list:
         if char_a != char_b:
 
             temp_df_sophia = sophia_screentime_ep1[(sophia_screentime_ep1[char_a] == 1) &
-                                    (sophia_screentime_ep1[char_b] == 1)][['Seconds', char_a, char_b]]
+                            (sophia_screentime_ep1[char_b] == 1)][['Seconds', char_a, char_b]]
             print(temp_df_sophia)
 #Above code gives me a temp df from sophia and 
 #zach of the character pairings and their corredponding seconds
@@ -743,10 +743,39 @@ for char_a in char_list:
                 if x in temp_list_sophia:
                     temp_shared_list.append(x)
                     print(temp_shared_list)
-                    chunked_list = chunk_by_successive(temp_shared_list)
+                    chunked_list = chunk_by_successive(temp_shared_list['Seconds'])
                     print(chunked_list)
 
 
+
+#BELOW CODE WORKS!!!!!!!!!!!!
+#THE PIECE DE RESISTANCE!!!! IM DONEEEEEEE!
+chunked_dict = {}
+temp_shared_list = []
+for char_a in char_list: 
+    for char_b in char_list:
+        if char_a != char_b:
+            temp_df_zach = zach_screentime_ep1[(zach_screentime_ep1[char_a] == 1) & 
+                                (zach_screentime_ep1[char_b] == 1)][['Seconds',char_a, char_b]]
+            print(temp_df_zach)
+            temp_df_sophia = sophia_screentime_ep1[(sophia_screentime_ep1[char_a] == 1) &
+                            (sophia_screentime_ep1[char_b] == 1)][['Seconds', char_a, char_b]]
+            print(temp_df_sophia)
+            temp_zach_list = temp_df_zach['Seconds']
+            print(temp_zach_list)
+            temp_list_sophia = temp_df_sophia['Seconds']
+            print(temp_list_sophia)
+            
+            temp_shared_list = [x for x in temp_zach_list if x in temp_list_sophia]
+            
+            chunked_list = chunk_by_successive(temp_shared_list)
+
+            # Store in dictionary using (char_a, char_b) as key
+            chunked_dict[(char_a, char_b)] = chunked_list
+            print(chunked_dict)
+            
+            
+            
 
 #I think there are no similar valyes for sophia df
 
@@ -769,8 +798,17 @@ for char_a in char_list:
                       
                    
         
+#Dictionary Not working
+
+#ryan_seth_df = pd.DataFrame(zach_screentime_ep1[(zach_screentime_ep1['Seth'] == 1) & 
+#                    (zach_screentime_ep1['Ryan'] == 1)][['Seconds','Seth', 'Ryan']])
 
 
+#print(ryan_seth_df)
+
+#zach_ryan_seth_chunked = chunk_by_successive(ryan_seth_df['Seconds'])
+
+#print(zach_ryan_seth_chunked)
 
 
 
